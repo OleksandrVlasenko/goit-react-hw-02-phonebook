@@ -3,6 +3,8 @@ import shortid from 'shortid';
 import Notiflix from 'notiflix';
 import PropTypes from 'prop-types';
 
+import {Form} from "./ContactForm.styled"
+
 export class ContactForm extends Component {
   state = {
     name: '',
@@ -44,7 +46,7 @@ export class ContactForm extends Component {
     const { name, number } = this.state;
     return (
       <>
-        <form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit}>
           <label htmlFor={this.nameId}>
             Name
             <input
@@ -73,7 +75,7 @@ export class ContactForm extends Component {
           </label>
 
           <button type="submit">Add contact</button>
-        </form>
+        </Form>
       </>
     );
   }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import shortid from 'shortid';
-import Notiflix from 'notiflix';
 
 import { ContactForm } from 'components/ContactForm/ContactForm';
 import { ContactList } from 'components/ContactList/ContactList';
@@ -14,46 +13,32 @@ export class App extends Component {
       { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
-    name: '',
-    number: '',
     filter: '',
   };
 
   handleChange = e => {
-    console.dir(e.currentTarget);
     const { name, value } = e.currentTarget;
     this.setState({
       [name]: value,
     });
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-
-    if (this.equalContacts(e)) {
-      Notiflix.Notify.failure(`${this.state.name} already in contacts`);
-      return;
-    };
-
+  addNewContact = (name, number) => {
     const newContact = {
       id: shortid.generate(),
-      name: this.state.name,
-      number: this.state.number,
+      name,
+      number,
     };
 
     this.setState(prevState => ({
       contacts: [newContact, ...prevState.contacts],
     }));
-
-    this.formReset();
   };
 
-  formReset = () => {
-    this.setState({
-      name: '',
-      number: '',
-      filter: '',
-    });
+  deleteContact = contactId => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(({ id }) => id !== contactId),
+    }));
   };
 
   filter = () => {
@@ -73,19 +58,20 @@ export class App extends Component {
 
   render() {
     const filteredContacts = this.filter();
-    const { name, number, filter } = this.state;
+    const { filter } = this.state;
     return (
       <>
         <h1>Phonebook</h1>
         <ContactForm
-          addContact={this.handleSubmit}
-          onChange={this.handleChange}
-          name={name}
-          number={number}
+          addContact={this.addNewContact}
+          equalContacts={this.equalContacts}
         />
         <h2>Contacts</h2>
         <Filter onChange={this.handleChange} filter={filter} />
-        <ContactList contacts={filteredContacts} />
+        <ContactList
+          contacts={filteredContacts}
+          deleteContact={this.deleteContact}
+        />
       </>
     );
   }
